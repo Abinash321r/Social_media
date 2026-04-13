@@ -1,0 +1,17 @@
+
+# Ignore node modules
+client/node_modules/
+server/node_modules/
+
+# Ignore build outputs
+client/build/
+client/dist/
+server/build/
+
+
+# Ignore cache
+**/.cache/
+
+# Ignore environment files
+server/.env
+client/.env
