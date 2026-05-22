@@ -1,0 +1,16 @@
+name: CI/CD Render Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'server/**'
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy Backend
+        run: curl -X POST ${{ secrets.RENDER_BACKEND_HOOK }}

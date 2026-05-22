@@ -1,0 +1,16 @@
+name: CI/CD Frontend Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'client/**'
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy Frontend
+        run: curl -X POST ${{ secrets.RENDER_FRONTEND_HOOK }}
