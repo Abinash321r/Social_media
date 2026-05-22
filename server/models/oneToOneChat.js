@@ -9,6 +9,7 @@ const oneToOneChatSchema = new mongoose.Schema({
   ],
 }, { timestamps: true });
 
+oneToOneChatSchema.index({ members: 1 });
 // Model
 const OneToOneChat = mongoose.model("OneToOneChat", oneToOneChatSchema);
 

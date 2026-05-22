@@ -13,7 +13,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "socialmedia_user_profiles",
+    folder: "chatapp_user_profiles",
     allowed_formats: ["png", "jpg", "jpeg"]
   },
 });

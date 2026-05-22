@@ -1,4 +1,4 @@
-import Conversation from "../models/conversationSchema.js";
+import Conversation from "../models/oneToOneChatMsg.js";
 
 const updateConversationStatus = async (req, res) => {
    try{

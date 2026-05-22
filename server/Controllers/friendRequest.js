@@ -1,46 +1,67 @@
-import FriendRequest from '../models/friendRequest.js'
+import mongoose from "mongoose";
+import FriendRequest from "../models/friendRequest.js";
 
 const getFriendRequestData = async (req, res) => {
-   try{
-     const { sender, receiver } = req.body;
+  try {
+    let { sender, receiver } = req.body;
 
-    //  Basic validation
+    // Basic validation
     if (!sender || !receiver) {
-      return res.status(400).json({ message: "Sender and receiver required" });
+      return res.status(400).json({
+        message: "Sender and receiver required"
+      });
     }
 
-    //  Prevent sending request to self
-    if (sender === receiver) {
-      return res.status(400).json({ message: "Cannot send request to yourself" });
+    // Convert to real ObjectId
+    sender = new mongoose.Types.ObjectId(sender);
+    receiver = new mongoose.Types.ObjectId(receiver);
+
+    // Prevent self request
+    if (sender.toString() === receiver.toString()) {
+      return res.status(400).json({
+        message: "Cannot send request to yourself"
+      });
     }
 
-    //  Check if already exists
+    // Prevent duplicate or reverse request
     const existing = await FriendRequest.findOne({
+      $or: [
+        {
           sender,
           receiver,
           status: "pending",
-    });
+        },
+        {
+          sender: receiver,
+          receiver: sender,
+          status:"pending",
+        }
+      ]
+    }).lean();
 
     if (existing) {
-      return res.status(400).json({ message: "Request already sent" });
+      return res.status(400).json({
+        message: "Friend request already exists"
+      });
     }
 
-    // Create new friend request
+    // Create request
     const savedRequest = await FriendRequest.create({
-          sender,
-          receiver
-        });
-
-    res.status(201).json({
-      message: "Friend request sent",
-      data: savedRequest,
+      sender,
+      receiver
     });
 
+    res.status(201).json({
+      message: "Friend request sent successfully",
+      data: savedRequest
+    });
 
-   }
-   catch (err) {
+  } catch (err) {
     console.log("Error:", err);
-    res.status(500).json({ message: "Server error" });
+
+    res.status(500).json({
+      message: "Server error"
+    });
   }
 };
 

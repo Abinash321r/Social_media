@@ -10,6 +10,10 @@ const getFriendRequestStatus = async (req, res) => {
       return res.status(400).json({ message: "Sender and receiver required" });
     }
 
+    // Convert to real ObjectId
+    sender = new mongoose.Types.ObjectId(sender);
+    receiver = new mongoose.Types.ObjectId(receiver);
+
     const updatedRequest = await FriendRequest.findOneAndUpdate(
      {
        sender,
@@ -22,7 +26,7 @@ const getFriendRequestStatus = async (req, res) => {
      {
        new: true, // return updated document
      }
-    );
+    ).lean();
 
 //  IF ACCEPTED → CREATE CHAT
     if (updatedRequest?.status === "accepted") {
@@ -30,7 +34,7 @@ const getFriendRequestStatus = async (req, res) => {
       //  prevent duplicate chat
       const existingChat = await OneToOneChat.findOne({
         members: { $all: [sender, receiver] },
-      });
+      }).lean();;
 
       if (!existingChat) {
         await OneToOneChat.create({

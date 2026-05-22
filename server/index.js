@@ -19,7 +19,7 @@ app.use('/',routes);
 connectDB(); // database connection
 
 const server = http.createServer(app); // create socket server
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: process.env.CLIENT_URL,
     credentials: true,

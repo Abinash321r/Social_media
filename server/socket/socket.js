@@ -1,73 +1,43 @@
-import Conversation from "../models/conversationSchema.js";
+import setupSocket from "./setupSocket.js";
+import disconnectSocket from "./disconnectSocket.js";
 
+import joinOneToOneChat from "./joinOneToOneChat.js";
+import sendOneToOneChatMessage from "./sendOneToOneChatMessage.js";
+import seenOneToOneMessages from "./seenOneToOneMessages.js";
+
+import joinGroupChat from "./joinGroupChat.js";
+import sendGroupChatMessage from "./sendGroupChatMessage.js";
+import seenGroupMessages from "./seenGroupMessages.js";
+
+import sendFriendRequest from "./sendFriendRequest.js";
+import acceptFriendRequest from "./acceptFriendRequest.js";
+import deleteFriendRequest from "./deleteFriendRequest.js";
 const socketHandler = (io) => {
 
-   io.on("connection", (socket) => {
-     console.log("User connected:", socket.id);
+  io.on("connection", (socket) => {
+   console.log("User connected:", socket.id);
+    setupSocket(io, socket);
 
-     //  Join one to one Chat 
-     socket.on("joinOneToOneChat", (oneToOneChatId) => {
-       socket.join(oneToOneChatId);
-       console.log(`Joined chat: ${oneToOneChatId}`);
-     });
+    joinOneToOneChat(socket);
 
-    //  join groupchat room
-     socket.on("joinGroupChat", (groupChatId) => {
-       socket.join(groupChatId);
-       console.log(`Joined chat: ${groupChatId}`);
-     });
+    joinGroupChat(socket);
 
-     //  sendOneToOneChatMessage
-     socket.on("sendOneToOneChatMessage",  async ({ oneToOneChatId, sender, text }) => {
-       try {
-            //SAVE TO DB
-            const newMessage = await Conversation.create({
-              chatType: "one-to-one",
-              chatId: oneToOneChatId,
-              chatTypeRef: "OneToOneChat",
-              sender,
-              text,
-            });
-            // EMIT or Deliver SAVED MESSAGE
-            io.to(oneToOneChatId).emit("receiveOneToOneChatMessage", newMessage);
-        } catch (err) {
-          console.log("Error sending message:", err);
-        }
-     });
+    sendFriendRequest(io, socket);
 
-     //  sendGroupChatMessage 
-     socket.on("sendGroupChatMessage", async ({ groupChatId, sender, text }) => {
-        try {
-          // SAVE TO DB
-          const newMessage = await Conversation.create({
-            chatType: "group",
-            chatId: groupChatId,
-            chatTypeRef: "GroupChat",
-            sender,
-            text,
-          });
-          //  EMIT or Deliver  SAVED MESSAGE
-          io.to(groupChatId).emit("receiveGroupChatMessage", newMessage);
-        } catch (err) {
-          console.log("Error sending message:", err);
-        }
-     });
+    acceptFriendRequest(io, socket);
+    
+    deleteFriendRequest(io,socket);
+    
+    sendOneToOneChatMessage(io, socket);
 
-      //  update conversaion status 
-     socket.on("messageDelivered", async (conversationId) => {
-       try {
-         await Conversation.findByIdAndUpdate(conversationId, {
-           status: "delivered",
-         });
-        } catch (err) {
-         console.log("Delivery update error:", err);
-       }
-     });
-   
-     //  Disconnect
-     socket.on("disconnect", () => {
-       console.log("User disconnected:", socket.id);
-     });
+    seenOneToOneMessages(io, socket);
+
+    sendGroupChatMessage(io, socket);
+
+    seenGroupMessages(io, socket);
+
+    disconnectSocket(io, socket);
+
     });
 
 };

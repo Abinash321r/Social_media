@@ -1,7 +1,7 @@
 const getLogoutStatus = async (req, res) => {
   res.clearCookie("usertoken", {
     httpOnly: true,
-    sameSite: "none",
+    sameSite: "lax",
     secure: false, // change to true in production with HTTPS
   });
 

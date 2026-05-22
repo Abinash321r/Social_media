@@ -8,20 +8,20 @@ const getSignUpData = async (req, res) => {
   try {
 console.log("📌 Signup endpoint hit");
 
-    console.log("username:", req.body.username);
+    console.log("name:", req.body.name);
     console.log("email:", req.body.email);
     console.log("password:", req.body.password);
     console.log("profilePic:", req.file?.path);
 
-    const { username, email, password } = req.body;
+    const { name, email, password } = req.body;
 
     //  Validate
-    if (!username || !email || !password) {
+    if (!name || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
     //  Check duplicate user
-    const existingUser = await Users.findOne({email:email });
+    const existingUser = await Users.findOne({email:email }).lean();
     if (existingUser) {
       return res.status(409).json({ message: "Email already exists" });
     }
@@ -31,7 +31,7 @@ console.log("📌 Signup endpoint hit");
 
     //  Store new user in DB
     const newUser = await Users.create({
-      name: username,
+      name: name,
       email,
       password: hashedPassword,
       profilePic: req?.file?.path|| process.env.DUMMY_PROFILE_PIC, // Cloudinary URL
@@ -45,7 +45,7 @@ console.log("📌 Signup endpoint hit");
         // Store token as httpOnly cookie
         res.cookie("usertoken", token, {
           httpOnly: true,
-          sameSite: "none",
+          sameSite: "lax",
           secure: false, // set true in production
           maxAge: 30 * 24 * 60 * 60 * 1000,
         });
@@ -54,7 +54,7 @@ console.log("📌 Signup endpoint hit");
       message: "Signup successful 🎉",
       user: {
         id: newUser._id,
-        username: newUser.name,
+        name: newUser.name,
         email: newUser.email,
         profilePic: newUser.profilePic,
       },

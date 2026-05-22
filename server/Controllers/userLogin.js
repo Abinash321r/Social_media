@@ -5,20 +5,20 @@ import jwt from "jsonwebtoken";
 const getUserLogin = async (req, res) => {
   try {
     console.log('data',req.body)
-    const {username,email, password } = req.body;
+    const {name,email, password } = req.body;
 
     // Validate
-    if (!username||!email || !password) {
-      return res.status(400).json({ message: "Email,username & password are required" });
+    if (!name||!email || !password) {
+      return res.status(400).json({ message: "Email,name & password are required" });
     }
 
     // Check user exists
-    const user = await Users.findOne({email:email,name:username});
+    const user = await Users.findOne({email:email,name:name}).lean();
     console.log('user',user)
     // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!user || !isMatch) {
-      return res.status(401).json({ message: "Invalid username or password" });
+      return res.status(401).json({ message: "Invalid name or password" });
     }
 
     //  Generate token
@@ -29,7 +29,7 @@ const getUserLogin = async (req, res) => {
     // Store token as httpOnly cookie
     res.cookie("usertoken", token, {
       httpOnly: true,
-      sameSite: "none",
+      sameSite:'lax',
       secure: false, // set true in production
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
@@ -38,7 +38,7 @@ const getUserLogin = async (req, res) => {
       message: "Login successful 🎯",
       user: {
         id: user._id,
-        username: user.fullName,
+        name: user.fullName,
         email: user.email,
         profilePic: user.profilePic,
       },
