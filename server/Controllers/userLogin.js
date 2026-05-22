@@ -29,8 +29,8 @@ const getUserLogin = async (req, res) => {
     // Store token as httpOnly cookie
     res.cookie("usertoken", token, {
       httpOnly: true,
-      sameSite:'lax',
-      secure: false, // set true in production
+      sameSite:'none',
+      secure: true, // set true in production
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     // Success response
