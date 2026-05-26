@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import { Navigate, Route, Routes } from "react-router-dom";
@@ -12,6 +12,8 @@ import Dashboard from './pages/Dashboard.jsx';
 import LoadingSpinner from './components/LoadingSpinner.jsx';
 
 function App() {
+
+
  //<Route path="/" element={<Dashboard/>} ></Route>
   return (
     <>
@@ -22,6 +24,7 @@ function App() {
   <Route element={<DashboardProtectedRoute/>}>
     <Route path="/" element={<Dashboard/>} ></Route>
   </Route>
+  <Route path="*" element={<Navigate to="/" />} />
 </Routes>
 </Suspense>
     </>
