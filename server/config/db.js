@@ -8,7 +8,7 @@ dns.setServers(["8.8.8.8", "8.8.4.4", ...dns.getServers()]);
 const connectDB = async () => {
   try {
     //,{ family: 4 }
-    await mongoose.connect(process.env.MONGO_URI,{maxPoolSize: 30});
+    await mongoose.connect(process.env.MONGO_URI,{maxPoolSize: 50});
     console.log("MongoDB Atlas Connected");
   } catch (error) {
     console.error("MongoDB connection error:", error.message);
