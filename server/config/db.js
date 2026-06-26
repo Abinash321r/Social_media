@@ -9,8 +9,8 @@ const connectDB = async () => {
   try {
     //,{ family: 4 }
     await mongoose.connect(process.env.MONGO_URI, {
-  maxPoolSize: 100, // Maintain up to 10 socket connections (default is 100)
-  minPoolSize: 10,  // Maintain a minimum of 2 socket connections
+  maxPoolSize: 300, // Maintain up to 10 socket connections (default is 100)
+  minPoolSize: 100,  // Maintain a minimum of 2 socket connections
   serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
   socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
 });
