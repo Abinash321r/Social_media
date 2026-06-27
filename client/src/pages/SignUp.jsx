@@ -50,11 +50,8 @@ function SignUp() {
       const response = await fetch(`${socketUrl}/signupdata`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
           credentials: "include",
-          body: JSON.stringify(user),
+          body: data,
         }
       )
       console.log('messsage', response)
