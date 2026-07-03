@@ -9,7 +9,7 @@ function Login() {
 
   const usernameRegex = /^[a-zA-Z\s]{2,}$/;
   const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{3,}$/;
-  const emailRegex = /^[^\s@]+@gmail\.com$/;;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
    const navigate = useNavigate();
