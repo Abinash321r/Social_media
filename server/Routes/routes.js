@@ -39,7 +39,7 @@ router.get('/',(req,res)=>{
 })
 
 // a lightweight health endpoint
-app.get('/health', (req, res) => {
+router.get('/health', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime() });
 });
 
